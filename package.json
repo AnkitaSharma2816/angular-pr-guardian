@@ -1,37 +1,70 @@
 {
   "name": "angular-pr-guardian",
-  "version": "2.0.0",
-  "description": "Angular PR Review Assistant - Modern Angular migration tool",
+  "version": "1.0.0",
+  "description": "🛡️ Angular 20+ Migration Readiness Tool - Automatically scan Angular projects for deprecated APIs and get migration recommendations",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "bin": {
-    "angular-pr-guardian": "dist/cli.js"
+    "angular-pr-guardian": "./dist/cli.js",
+    "apg": "./dist/cli.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
   "scripts": {
+    "clean": "node -e \"try{require('fs').rmSync('dist',{recursive:true})}catch(e){}\"",
+    "prebuild": "npm run clean",
     "build": "tsc",
     "start": "node dist/cli.js",
-    "dev": "ts-node src/cli.ts"
+    "dev": "ts-node src/cli.ts",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"No tests yet\"",
+    "postversion": "git push && git push --tags"
   },
-  "dependencies": {
-    "chalk": "^5.6.2",
-    "commander": "^11.1.0",
-    "glob": "^10.5.0",
-    "ora": "^7.0.0",
-    "ts-morph": "^21.0.1"
+  "keywords": [
+    "angular",
+    "migration",
+    "angular-migration",
+    "angular-upgrade",
+    "angular-20",
+    "angular-standalone",
+    "angular-signals",
+    "code-review",
+    "linting",
+    "angular-best-practices",
+    "angular-cli",
+    "angular-compatibility"
+  ],
+  "author": {
+    "name": "Ankita Sharma",
+    "email": "demoankita27@gmail.com",
+    "url": "https://github.com/AnkitaSharma2816"
   },
-  "devDependencies": {
-    "@types/node": "^20.19.41",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
-  },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AnkitaSharma2816/angular-pr-guardian.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/AnkitaSharma2816/angular-pr-guardian/issues"
   },
-  "homepage": "https://github.com/AnkitaSharma2816/angular-pr-guardian#readme"
+  "homepage": "https://github.com/AnkitaSharma2816/angular-pr-guardian#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.0.0",
+    "glob": "^10.3.0",
+    "ora": "^5.4.1",
+    "ts-morph": "^21.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
 }

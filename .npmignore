@@ -1,0 +1,53 @@
+# Source files
+src/
+tsconfig.json
+tsconfig.tsbuildinfo
+
+# Development files
+.node_modules
+.vscode
+.idea
+*.log
+.DS_Store
+.thumbs.db
+
+# Test files
+*.spec.ts
+*.test.ts
+__tests__/
+tests/
+coverage/
+.nyc_output/
+
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Documentation (keep README.md)
+docs/
+examples/
+CONTRIBUTING.md
+
+# Build artifacts (keep dist)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
