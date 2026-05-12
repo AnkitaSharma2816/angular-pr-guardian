@@ -1,0 +1,37 @@
+{
+  "name": "angular-pr-guardian",
+  "version": "2.0.0",
+  "description": "Angular PR Review Assistant - Modern Angular migration tool",
+  "main": "dist/index.js",
+  "bin": {
+    "angular-pr-guardian": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "dev": "ts-node src/cli.ts"
+  },
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^11.1.0",
+    "glob": "^10.5.0",
+    "ora": "^7.0.0",
+    "ts-morph": "^21.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.41",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnkitaSharma2816/angular-pr-guardian.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnkitaSharma2816/angular-pr-guardian/issues"
+  },
+  "homepage": "https://github.com/AnkitaSharma2816/angular-pr-guardian#readme"
+}
