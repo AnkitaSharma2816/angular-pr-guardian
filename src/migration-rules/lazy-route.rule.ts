@@ -1,5 +1,6 @@
 import { SourceFile } from 'ts-morph';
 import { deductPoints } from '../core/score-engine';
+import { detectAngularVersion, findProjectRoot } from '../core/version-detector';
 
 export function checkLazyRouteMigration(sourceFile: SourceFile) {
   const text = sourceFile.getFullText();
@@ -7,19 +8,25 @@ export function checkLazyRouteMigration(sourceFile: SourceFile) {
   
   if (!filePath.includes('routes') && !filePath.includes('app-routing')) return;
   
-  const componentPattern = /component:\s*(\w+)/g;
-  const loadComponentPattern = /loadComponent/g;
+  const projectPath = findProjectRoot(filePath);
+  const angularVersion = detectAngularVersion(projectPath);
   
-  const hasDirectComponents = componentPattern.test(text);
-  const hasLazyComponents = loadComponentPattern.test(text);
-  
-  if (hasDirectComponents && !hasLazyComponents) {
-    deductPoints(
-      'LazyLoading',
-      filePath,
-      3,
-      'Components loaded eagerly instead of lazy loading',
-      'Use loadComponent: () => import("./component") instead of component: ComponentClass'
-    );
+  // loadComponent available from Angular 14+
+  if (angularVersion.major >= 14) {
+    const componentPattern = /component:\s*(\w+)/g;
+    const loadComponentPattern = /loadComponent/g;
+    
+    const hasDirectComponents = componentPattern.test(text);
+    const hasLazyComponents = loadComponentPattern.test(text);
+    
+    if (hasDirectComponents && !hasLazyComponents) {
+      deductPoints(
+        'LazyLoading',
+        filePath,
+        3,
+        `Components loaded eagerly instead of lazy loading (Angular ${angularVersion.major}+ supports loadComponent)`,
+        `Use loadComponent: () => import('./component') instead of component: ComponentClass`
+      );
+    }
   }
 }

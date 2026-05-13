@@ -1,30 +1,37 @@
 import { SourceFile, SyntaxKind } from 'ts-morph';
 import { deductPoints } from '../core/score-engine';
+import { detectAngularVersion, findProjectRoot } from '../core/version-detector';
 
 export function checkPerformanceRules(sourceFile: SourceFile) {
   const text = sourceFile.getFullText();
   const filePath = sourceFile.getFilePath();
   
-  // Check for missing trackBy in ngFor
-  if (text.includes('*ngFor') && !text.includes('trackBy')) {
+  if (!text.includes('@Component')) return;
+  
+  const projectPath = findProjectRoot(filePath);
+  const angularVersion = detectAngularVersion(projectPath);
+  
+  // Check for OnPush strategy (recommended for all versions)
+  if (!text.includes('ChangeDetectionStrategy.OnPush')) {
     deductPoints(
-      'MissingTrackBy',
+      'OnPushStrategy',
       filePath,
-      3,
-      '*ngFor without trackBy',
-      'Add trackBy function to improve performance: *ngFor="let item of items; trackBy: trackById"'
+      5,
+      `Missing OnPush change detection strategy (Angular ${angularVersion.major})`,
+      `Add 'changeDetection: ChangeDetectionStrategy.OnPush' to component decorator`
     );
   }
   
-  // Check for function calls in templates
-  const templatePattern = /{{[^}]*\([^)]*\)[^}]*}}/g;
-  if (templatePattern.test(text)) {
+  // Function calls in templates - more important in newer versions
+  const methodCalls = text.match(/{{[^}]*this\.[a-zA-Z]+\([^)]*\)[^}]*}}/g);
+  if (methodCalls && methodCalls.length > 0) {
+    const points = angularVersion.major >= 17 ? 4 : 2;
     deductPoints(
       'FunctionInTemplate',
       filePath,
-      4,
-      'Function call in template binding',
-      'Move function logic to component property or pipe for better performance'
+      points,
+      `Found ${methodCalls.length} function call(s) in template (Angular ${angularVersion.major})`,
+      `Move function logic to component property or pipe. Functions run on every change detection cycle`
     );
   }
 }

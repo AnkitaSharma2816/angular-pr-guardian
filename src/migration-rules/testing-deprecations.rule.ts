@@ -1,5 +1,5 @@
-import { SourceFile, SyntaxKind } from 'ts-morph';
-import { deductPoints } from '../core/score-engine';
+import { SourceFile } from 'ts-morph';
+import { detectAngularVersion, findProjectRoot } from '../core/version-detector';
 
 export function checkTestingDeprecations(sourceFile: SourceFile) {
   const text = sourceFile.getFullText();
@@ -7,25 +7,18 @@ export function checkTestingDeprecations(sourceFile: SourceFile) {
   
   if (!filePath.includes('.spec.ts')) return;
   
-  // Check for TestBed.inject vs TestBed.get
-  if (text.includes('TestBed.get(')) {
-    deductPoints(
-      'TestBedGet',
-      filePath,
-      4,
-      'Using deprecated TestBed.get()',
-      'Replace TestBed.get(Service) with TestBed.inject(Service)'
-    );
-  }
+  const projectPath = findProjectRoot(filePath);
+  const angularVersion = detectAngularVersion(projectPath);
   
-  // Check for async() vs waitForAsync()
-  if (text.includes('async(') && !text.includes('waitForAsync')) {
-    deductPoints(
-      'AsyncTest',
-      filePath,
-      4,
-      'Using deprecated async() test helper',
-      'Replace async() with waitForAsync()'
-    );
+  if (angularVersion.major >= 15) {
+    if (text.includes('TestBed.get(')) {
+      console.log(`\n⚠️ [WARNING] Using deprecated TestBed.get() in: ${filePath}`);
+      console.log(`   💡 Replace TestBed.get(Service) with TestBed.inject(Service)`);
+    }
+    
+    if (text.includes('async(') && !text.includes('waitForAsync')) {
+      console.log(`\n⚠️ [WARNING] Using deprecated async() test helper in: ${filePath}`);
+      console.log(`   💡 Replace async() with waitForAsync()`);
+    }
   }
 }

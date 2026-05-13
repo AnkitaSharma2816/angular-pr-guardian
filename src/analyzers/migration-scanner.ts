@@ -28,7 +28,12 @@ import { checkRendererDeprecations } from '../migration-rules/renderer-deprecati
 import { checkFormsDeprecations } from '../migration-rules/forms-deprecations.rule';
 import { checkPipeDeprecations } from '../migration-rules/pipe-deprecations.rule';
 import { checkStandaloneBootstrapReadiness } from '../migration-rules/standalone-bootstrap.rule';
+import { detectAngularVersion } from '../core/version-detector';
+const projectPath = getConfig().projectPath;
+const angularVersion = detectAngularVersion(projectPath);
 
+console.log(`📌 Detected Angular version: ${angularVersion.major}.${angularVersion.minor}.${angularVersion.patch}`);
+console.log(`   ${angularVersion.name}\n`);
 export async function runMigrationScanner() {
   const project = getProject();
   const sourceFiles = project.getSourceFiles();
